@@ -1,0 +1,20 @@
+{
+    "name": "pierobay/restful",
+    "description": "Restful API",
+    "keywords": ["restful", "rest", "api","kinto-Un", "PHP"],
+    "type": "library",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Piero.Bay",
+            "email": "mail@pierobay.be"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "KintoUn\\libs\\": ""
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}
