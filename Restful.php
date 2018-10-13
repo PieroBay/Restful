@@ -122,7 +122,7 @@ class Restful{
 	 * @param array $rename [key to rename]
 	 * @return void
 	 */
-	public static function renderXml($data=array(),$unset=null,$rename=null){
+	public static function renderXml($data=array(),$unset=null,$rename=null,$baseXml="items",$loopXml="item"){
 		$d  = array();
 
 		if(count($data) == 1){
@@ -149,8 +149,8 @@ class Restful{
 		}
 
 		header('Content-Type: application/xml');
-		$xml = new SimpleXMLElement("<?xml version=\"1.0\"?><items></items>");
-		self::array_to_xml($d,$xml);
+		$xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><".$baseXml."></".$baseXml.">");
+		self::array_to_xml($d,$xml,$loopXml);
 		exit($xml->asXML());
 	}
 
@@ -161,14 +161,14 @@ class Restful{
 	 * @param [type] $xml
 	 * @return void
 	 */
-	public static function array_to_xml($array, &$xml) {
+	public static function array_to_xml($array, &$xml,$itemName="item") {
 	    foreach($array as $key => $value){
 	        if(is_array($value)){
 	            if(!is_numeric($key)){
 	                $subnode = $xml->addChild("$key");
 	                self::array_to_xml($value, $subnode);
 	            }else{
-	                $subnode = $xml->addChild("item");
+	                $subnode = $xml->addChild($itemName);
 	                self::array_to_xml($value, $subnode);
 	            }
 	        }else{
