@@ -1,6 +1,6 @@
 <?php
 
-	namespace KintoUn\libs;
+namespace KintoUn\libs;
 
 /**
  * Restful class
@@ -120,6 +120,8 @@ class Restful{
 	 * @param array $data
 	 * @param array $unset [key to remove]
 	 * @param array $rename [key to rename]
+	 * @param string $baseXml [base xml balise]
+	 * @param string $loopXml [loop xml balise]
 	 * @return void
 	 */
 	public static function renderXml($data=array(),$unset=null,$rename=null,$baseXml="items",$loopXml="item"){
@@ -149,9 +151,21 @@ class Restful{
 		}
 
 		header('Content-Type: application/xml');
-		$xml = new \SimpleXMLElement("<?xml version=\"1.0\"?><".$baseXml."></".$baseXml.">");
-		self::array_to_xml($d,$xml,$loopXml);
-		exit($xml->asXML());
+		$xml = new \SimpleXMLElement("<rss/>");
+		$global = $xml->addChild($baseXml);
+
+
+		self::array_to_xml($d,$global,$loopXml);
+		$dom_sxe = dom_import_simplexml($xml);
+
+
+		$dom_output = new \DOMDocument('1.0');
+		$dom_output->formatOutput = true;
+		$dom_sxe = $dom_output->importNode($dom_sxe, true);
+		$dom_sxe = $dom_output->appendChild($dom_sxe);
+
+		exit($dom_output->saveXML($dom_output, LIBXML_NOEMPTYTAG));
+
 	}
 
 	/**
@@ -159,6 +173,7 @@ class Restful{
 	 *
 	 * @param array $array
 	 * @param [type] $xml
+	 * @param string $itemName
 	 * @return void
 	 */
 	public static function array_to_xml($array, &$xml,$itemName="item") {
@@ -176,6 +191,7 @@ class Restful{
 	        }
 	    }
 	}
+
 
 	/**
 	 * Check if is POST method
